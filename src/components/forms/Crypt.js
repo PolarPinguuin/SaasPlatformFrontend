@@ -1,8 +1,6 @@
 import React from 'react'
-import YesNoInput from '../../form/atoms/YesNoInput'
-import Button from '../ui/button/Button'
 
-const Crypt = (props: any) => {
+const Crypt = (props) => {
   const { register } = props
   return (
     <div className="flex flex-wrap mb-6">
@@ -13,14 +11,10 @@ const Crypt = (props: any) => {
           </h3>
           <div className="mb-4">
             <label htmlFor="upload">
-              <YesNoInput
-                id="upload_file"
-                name="crypt_type"
-                register={register}
-              />
+
             </label>
           </div>
-          <Button type="submit">Descarca fisierul</Button>
+          <button type="submit">Descarca fisierul</button>
         </div>
       </div>
       <div className="w-2/4 px-3 mb-4">
@@ -29,15 +23,8 @@ const Crypt = (props: any) => {
             File
           </h3>
           <div className="mb-4">
-            <label htmlFor="upload">
-              <YesNoInput
-                id="upload_file"
-                name="signature"
-                register={register}
-              />
-            </label>
-          </div>
-          <Button type="submit">Descarca fisierul</Button>
+s          </div>
+          <button type="submit">Descarca fisierul</button>
         </div>
       </div>
     </div>

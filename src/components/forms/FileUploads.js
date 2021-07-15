@@ -1,8 +1,7 @@
 import React from 'react'
-import TextInput from '../../form/atoms/TextInput'
-import Button from '../ui/button/Button'
+import TextInput from './TextInput'
 
-const FileUploads = (props: any) => {
+const FileUploads = (props) => {
   const { register } = props
   return (
     <div className="flex flex-wrap mb-6">
@@ -15,13 +14,12 @@ const FileUploads = (props: any) => {
             <label htmlFor="upload">
               <TextInput
                 id="upload_file"
-                name="upload_file"
-                register={register}
+                register={{...register("upload_file", { required: true })}}
                 type="file"
               />
             </label>
           </div>
-          <Button type="submit">Descarca fisierul</Button>
+          <button type="submit">Descarca fisierul</button>
         </div>
       </div>
       <div className="w-2/4 px-3 mb-4">
@@ -39,7 +37,7 @@ const FileUploads = (props: any) => {
               />
             </label>
           </div>
-          <Button type="submit">Descarca fisierul</Button>
+          <button type="submit">Descarca fisierul</button>
         </div>
       </div>
       <div className="w-2/4 px-3 mb-4">
@@ -57,7 +55,7 @@ const FileUploads = (props: any) => {
               />
             </label>
           </div>
-          <Button type="submit">Descarca fisierul</Button>
+          <button type="submit">Descarca fisierul</button>
         </div>
       </div>
     </div>

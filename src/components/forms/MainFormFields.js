@@ -1,8 +1,7 @@
 import React from 'react'
-import TextInput from '../../form/atoms/TextInput'
-import Button from '../ui/button/Button'
+import TextInput from './TextInput'
 
-const MainFormFields = (props: any) => {
+const MainFormFields = (props) => {
   const { register } = props
   return (
     <div className="flex flex-wrap">
@@ -21,7 +20,7 @@ const MainFormFields = (props: any) => {
               <TextInput id="upload_file" name="iv" register={register} />
             </label>
           </div>
-          <Button type="submit">Descarca fisierul</Button>
+          <button type="submit">Descarca fisierul</button>
         </div>
       </div>
     </div>
