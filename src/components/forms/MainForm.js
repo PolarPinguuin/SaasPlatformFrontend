@@ -34,6 +34,19 @@ const MainForm = () => {
       .then((res) => console.log(res))
       .then((result) => console.log(result))
       .catch((err) => console.log(err))
+
+
+
+    try {
+      const data = await fetch('http://localhost:3000/upload', {
+        method: 'GET',
+      })
+      const arrayBuffer = await data.arrayBuffer()
+      const base64String = btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer)));
+      window.location.href = 'data:application/octet-stream;base64,' + base64String;
+    } catch (e) {
+      console.log(e);
+    }
   }
 
 
