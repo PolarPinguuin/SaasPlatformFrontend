@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form'
 import MainFormFields from './MainFormFields'
 import Crypt from './Crypt'
 import FileUploads from './FileUploads'
+import {aesData, jsonBody, keysData, services, signatureData} from "../../general";
 
 const MainForm = () => {
   const form = useForm()
@@ -11,48 +12,28 @@ const MainForm = () => {
   const onSubmit = async (data) => {
     const { upload_file } = data
     console.log(data);
-    let payload = {}
+
+
+    await fetch('http://localhost:3000/users', {
+      method: 'POST',
+      headers: { "Content-Type": "Application/json" },
+      body: JSON.stringify(jsonBody)
+    })
+      .then((res) => res)
+      .then((result) => console.log(result))
+      .catch((err) => console.log(err))
+
 
     const formData = new FormData()
-    formData.append('fileBuffer', upload_file[0])
+    formData.append('fileData', upload_file[0])
 
-    payload = {
-      fileData: formData,
-      services: ['aesecb.en'],
-      aesData: {
-        iv: null,
-        keyPassword: '1234567890123456',
-      },
-      keysData: {
-        certificate: null,
-        privateKey: null,
-        publicKey: null,
-      },
-      signatureData: {
-        fileBuffer: null,
-        fileName: null,
-        fileString: null,
-        extension: null,
-        xmlSigType: 'enveloped',
-      },
-    }
-
-    console.log(payload)
-
-    const response =  await fetch('http://localhost:3000/users', {
+    await fetch('http://localhost:3000/upload', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: formData, // Use your own property name / key
-      }),
+      body: formData
     })
-      .then((res) => res.json())
+      .then((res) => console.log(res))
       .then((result) => console.log(result))
-      .catch((err) => console.log('error'))
-
-
+      .catch((err) => console.log(err))
   }
 
 
