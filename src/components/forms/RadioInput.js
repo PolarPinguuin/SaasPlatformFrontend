@@ -13,6 +13,7 @@ const TextInput = ({
 }) => {
 
   return (
+  <div className="radioInput mb-4">
     <div className={`inputContainer ${className}`}>
       <label htmlFor={id}>{label}</label>
       <input
@@ -23,6 +24,7 @@ const TextInput = ({
         {...register}
       />
     </div>
+  </div>
   )
 }
 

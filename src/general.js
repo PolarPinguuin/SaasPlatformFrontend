@@ -20,8 +20,6 @@ export const aesData = {
 export const services = ['aesecb.en']
 
 export const jsonBody = {
-  signatureData,
-  keysData,
   aesData,
   services
 }
@@ -33,7 +31,7 @@ export const request = async (endpoint, method, headers = { "Content-Type": "App
     headers,
     body
   })
-    .then((res) => res)
-    .then((result) => console.log(result))
+    .then(res => res)
+    .then(result => result.json())
     .catch((err) => console.log(err))
 }

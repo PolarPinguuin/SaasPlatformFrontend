@@ -34,7 +34,6 @@ button:hover {
 }
 
 label {
-  margin-bottom: 30px;
   display: block;
 }
 
@@ -73,10 +72,39 @@ h3 {
 
 .inputContainer {
   display: flex;
+  align-items: center;
   margin-right: 15px;
 }
 
 .inputsWrapper {
   align-items: start;
   justify-content: center;
+}
+
+input[type="text"] {
+  border: 2px solid #ccc;
+  height: 40px;
+  padding-left: 10px;
+  margin-left: 10px;
+}
+
+select {
+  border: 2px solid #ccc;
+  background: #fff;
+  padding: 5px;
+  margin-bottom: 10px;
+}
+
+.error {
+  color: #d22424;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.errorField {
+  border-color: #d22424 !important;
+}
+
+.mb-4 {
+  margin-bottom: 10px;
 }

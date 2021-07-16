@@ -8,19 +8,24 @@ const TextInput = ({
   label,
   placeholder,
   type = 'text',
+  className
 }) => {
-
+  console.log(error);
   return (
-    <div className="inputContainer">
-      <label htmlFor={id}>{label}</label>
-      <input
-        className={`rounded-lg ${error ? 'border-red-600 border-2' : ''}`}
-        type={type}
-        id={id}
-        {...register}
-      />
-    </div>
-  )
+<div className={className}>
+  <div className="inputContainer">
+    <label htmlFor={id}>{label}</label>
+    <input
+      className={`rounded-lg ${error ? 'errorField' : ''}`}
+      type={type}
+      id={id}
+      {...register}
+    />
+  </div>
+  {error && <p className="error">{error.message || 'This field is required'}</p>}
+
+</div>
+)
 }
 
 export default TextInput
