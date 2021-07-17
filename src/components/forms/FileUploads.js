@@ -1,8 +1,9 @@
-import React from 'react'
+import React, {useState} from 'react'
 import TextInput from './TextInput'
 import RadioInput from "./RadioInput";
+import {set} from "react-hook-form";
 
-const FileUploads = (props) => {
+const FileUploads = ({props, getCertificate}) => {
   const {register, watch, formState: { errors }} = props
   const showSelect = watch('encrypt_type') === 'aes'
   const showIv = watch('aes_type') === 'aesecbc'
@@ -10,6 +11,25 @@ const FileUploads = (props) => {
     minLength: {value: 16, message: 'The length should be 16 char'},
     maxLength: {value: 16, message: 'The length should be 16 char'}
   } : {
+  }
+  const [file, setFile] = useState()
+
+  const downloadFile = async () => {
+    await fetch('http://localhost:3000/getFiles', {
+      method: 'POST',
+      body: JSON.stringify({download: 'file'}),
+      headers: { "Content-Type": "Application/json" }
+    }).then(res => res)
+    .then(result => {
+      setFile(result)
+      return result;
+    })
+    .catch((err) => console.log(err))
+
+    //facem fisierul si l descarcam cu datele primite de pe raspuns ( file.fileName, file.fileExtension)
+    // const dowload = React.createElement('a', {href: 'data:application/octet-stream;base64,' + data, download: `${fileData.fileName}${fileData.fileExtension}`}, "Download" )
+
+    console.log(file);
   }
 
   return (
@@ -29,7 +49,7 @@ const FileUploads = (props) => {
               />
             </label>
           </div>
-          <button type="submit">Descarca fisierul</button>
+          <button type="button" onClick={() => downloadFile()}>Descarca fisierul</button>
         </div>
       </div>
       <div className="w-2-4 px-3 mb-4">
@@ -47,7 +67,7 @@ const FileUploads = (props) => {
               />
             </label>
           </div>
-          <button type="submit">Descarca fisierul</button>
+          <button type="button" onClick={()=>getCertificate()}>Get certificate</button>
         </div>
       </div>
       <div className="w-2-4 px-3 mb-4">

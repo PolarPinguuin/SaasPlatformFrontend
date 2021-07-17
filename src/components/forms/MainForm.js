@@ -58,7 +58,6 @@ const MainForm = () => {
 
   const onSubmit = async (data) => {
       const { upload_file, upload_key, upload_signature, aes_type, encrypt_action, encrypt_type, signature_type, keyPassword, iv } = data
-      await getCertificate();
 
 
     // aesecb.en
@@ -100,24 +99,25 @@ const MainForm = () => {
     await getFile();
     }
 
-    const getCertificate = async () => {
-        certificateData = await fetch('http://localhost:8888/', {
-            method: 'GET',
-        }).then(res => res.json())
-            .then(result => {
-                console.log("Certificate:", b64_to_utf8(result.certificate))
-                return result;
-            })
-            .catch((err) => console.log(err))
-    }
+  const getCertificate = async () => {
+    console.log("www");
+    certificateData = await fetch('http://localhost:8888/', {
+          method: 'GET',
+      }).then(res => res.json())
+          .then(result => {
+              console.log("Certificate:", b64_to_utf8(result.certificate))
+              return result;
+          })
+          .catch((err) => console.log(err))
+  }
 
-    function b64_to_utf8(str) {
-        return decodeURIComponent(escape(window.atob(str)));
-    }
+  function b64_to_utf8(str) {
+      return decodeURIComponent(escape(window.atob(str)));
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="container mx-auto pt-12">
-      <FileUploads {...form} />
+      <FileUploads props={form} getCertificate={getCertificate} />
       {/*<Crypt {...form} />*/}
       {/*<MainFormFields {...form} />*/}
       <button type="submit">SEND</button>
