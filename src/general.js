@@ -38,5 +38,9 @@ export const request = async (endpoint, method, headers = { "Content-Type": "App
           console.log("Result:", result)
           return result;
       })
-        .catch((err) => toast.error('Someting went wrong! Please try again'))
+      .catch((err) => {
+          if (err.message !== "Unexpected end of JSON input") {
+              toast.error('Someting went wrong! Please try again')
+          }
+      })
 }

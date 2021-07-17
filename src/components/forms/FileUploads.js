@@ -21,7 +21,9 @@ const FileUploads = ({props, getCertificate, fileDetails}) => {
       headers: {"Content-Type": "Application/json"}
     }).then(res => res.text()).then(result => {
       return result;
-    }).catch((err) => toast.error('Oops something went wrong! Please try again.'))
+    }).catch((err) => {
+        toast.error('Oops something went wrong! Please try again.')
+    })
 
     const {
       filedata,
@@ -38,7 +40,8 @@ const FileUploads = ({props, getCertificate, fileDetails}) => {
     }
     link.click()
   }
-  const isSigantureDisabled = !!fileDetails?.signatureData;
+    const isSigantureDisabled = !!fileDetails?.signatureData;
+    const isFileData = !!fileDetails?.filedata;
   return (
     <div className="flex flex-wrap mb-6">
       <div className="w-2-4 px-3 mb-4">
@@ -56,7 +59,7 @@ const FileUploads = ({props, getCertificate, fileDetails}) => {
               />
             </label>
           </div>
-          <button type="button" disabled={!isSigantureDisabled} onClick={() => downloadFile('fileData')}>Descarca fisierul</button>
+                  <button type="button" disabled={!isFileData} onClick={() => downloadFile('fileData')}>Descarca fisierul</button>
         </div>
       </div>
       <div className="w-2-4 px-3 mb-4">
