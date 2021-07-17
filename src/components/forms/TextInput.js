@@ -14,7 +14,7 @@ const TextInput = ({
   return (
 <div className={className}>
   <div className="inputContainer">
-    <label htmlFor={id}>{label}</label>
+    <label htmlFor={id} className="labelfile">{label}</label>
     <input
       className={`rounded-lg ${error ? 'errorField' : ''}`}
       type={type}

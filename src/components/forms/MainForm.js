@@ -1,18 +1,19 @@
 import React, {useState} from 'react'
-import { useForm } from 'react-hook-form'
+import {useForm} from 'react-hook-form'
 import MainFormFields from './MainFormFields'
 import Crypt from './Crypt'
 import FileUploads from './FileUploads'
 import {aesData, jsonBody, keysData, request, services, signatureData} from "../../general";
+import {toast} from "react-toastify";
 
 const MainForm = () => {
   const form = useForm()
-  const { handleSubmit } = form
-  const[fileDetails, setFileDetails]= useState()
+  const {handleSubmit} = form
+  const [fileDetails, setFileDetails] = useState()
 
-    // Data
-    let fileData = null;
-    let certificateData = null;
+  // Data
+  let fileData = null;
+  let certificateData = null;
 
   // const getFile = async () => {
   //     try {
@@ -56,7 +57,17 @@ const MainForm = () => {
   // }
 
   const onSubmit = async (data) => {
-      const { upload_file, upload_key, upload_signature, aes_type, encrypt_action, encrypt_type, signature_type, keyPassword, iv } = data
+    const {
+      upload_file,
+      upload_key,
+      upload_signature,
+      aes_type,
+      encrypt_action,
+      encrypt_type,
+      signature_type,
+      keyPassword,
+      iv
+    } = data
 
 
     // aesecb.en
@@ -72,23 +83,23 @@ const MainForm = () => {
     //   .then((result) => console.log(result))
     //   .catch((err) => console.log(err))
 
-      if (!certificateData) {
-          await getCertificate();
-      }
+    if (!certificateData) {
+      await getCertificate();
+    }
 
     const jsonData = {
       ...jsonBody,
-      services: [encryptionAction, signature_type],
+      services: [encrypt_type === 'none' ? null : encryptionAction, signature_type === 'none' ? null : signature_type],
       aesData: {
         keyPassword,
         iv
-        },
-        keysData: {
-            certificate: certificateData?.certificate,
-        }
+      },
+      keysData: {
+        certificate: certificateData?.certificate,
+      }
     }
 
-      await request('users', 'POST', { "Content-Type": "Application/json" }, JSON.stringify(jsonData))
+    await request('users', 'POST', {"Content-Type": "Application/json"}, JSON.stringify(jsonData))
 
     const formData = new FormData()
     formData.append('fileData', upload_file[0])
@@ -97,30 +108,29 @@ const MainForm = () => {
 
     fileData = await request('upload', 'POST', {}, formData)
     setFileDetails(fileData)
-      console.log("fileExtension,", fileData);
-    }
-
-  const getCertificate = async () => {
-    console.log("www");
-    certificateData = await fetch('http://localhost:8888/', {
-          method: 'GET',
-      }).then(res => res.json())
-          .then(result => {
-              console.log("Certificate:", b64_to_utf8(result.certificate))
-              return result;
-          })
-          .catch((err) => console.log(err))
+    console.log("fileExtension,", fileData);
   }
 
-  function b64_to_utf8(str) {
-      return decodeURIComponent(escape(window.atob(str)));
+  const getCertificate = async () => {
+    certificateData = await fetch('http://localhost:8888/', {
+      method: 'GET',
+    }).then(res => res.json()).then(result => {
+      return result;
+    }).catch((err) => toast.error('Could not get the certificate from the USB token.'))
+  }
+
+
+  if (fileDetails?.isSignedValid) {
+    toast.success('Semnatura e valida');
+  }
+
+  if (fileDetails?.isSignedValid === false) {
+    toast.error('Semnatura nu e valida');
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="container mx-auto pt-12">
       <FileUploads props={form} getCertificate={getCertificate} fileDetails={fileDetails} />
-      {/*<Crypt {...form} />*/}
-      {/*<MainFormFields {...form} />*/}
       <button type="submit">SEND</button>
     </form>
   )

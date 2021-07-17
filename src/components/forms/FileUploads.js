@@ -2,43 +2,43 @@ import React, {useRef, useState} from 'react'
 import TextInput from './TextInput'
 import RadioInput from "./RadioInput";
 import {set} from "react-hook-form";
+import {toast} from "react-toastify";
 
 const FileUploads = ({props, getCertificate, fileDetails}) => {
-  const {register, watch, formState: { errors }} = props
+  const {register, watch, formState: {errors}} = props
   const showSelect = watch('encrypt_type') === 'aes'
   const showIv = watch('aes_type') === 'aesecbc'
+  const showActions = watch('encrypt_type') !== 'none'
   const passwordValidations = showSelect ? {
     minLength: {value: 16, message: 'The length should be 16 char'},
     maxLength: {value: 16, message: 'The length should be 16 char'}
-  } : {
-  }
+  } : {}
+
   const downloadFile = async (type) => {
     const data = await fetch('http://localhost:3000/getFile', {
       method: 'POST',
       body: JSON.stringify({fileName: type}),
-      headers: { "Content-Type": "Application/json" }
-    }).then(res => res.text())
-    .then(result => {
+      headers: {"Content-Type": "Application/json"}
+    }).then(res => res.text()).then(result => {
       return result;
-    })
-          .catch((err) => console.log(err))
+    }).catch((err) => toast.error('Oops something went wrong! Please try again.'))
 
-      const {
-          filedata,
-          signatureData
-      } = fileDetails;
+    const {
+      filedata,
+      signatureData
+    } = fileDetails;
 
     const link = document.createElement('a')
-      link.href = 'data:application/octet-stream;base64,' + data
+    link.href = 'data:application/octet-stream;base64,' + data
 
-      if (type === "fileSignature") {
-          link.download = `${signatureData.fileName}${signatureData.fileExtension}`
-      } else {
-          link.download = `${filedata.fileName}${filedata.fileExtension}`
-      }
+    if (type === "fileSignature") {
+      link.download = `${signatureData.fileName}${signatureData.fileExtension}`
+    } else {
+      link.download = `${filedata.fileName}${filedata.fileExtension}`
+    }
     link.click()
   }
-
+  const isSigantureDisabled = !!fileDetails?.signatureData;
   return (
     <div className="flex flex-wrap mb-6">
       <div className="w-2-4 px-3 mb-4">
@@ -56,7 +56,7 @@ const FileUploads = ({props, getCertificate, fileDetails}) => {
               />
             </label>
           </div>
-          <button type="button" onClick={() => downloadFile('fileData')}>Descarca fisierul</button>
+          <button type="button" disabled={!isSigantureDisabled} onClick={() => downloadFile('fileData')}>Descarca fisierul</button>
         </div>
       </div>
       <div className="w-2-4 px-3 mb-4">
@@ -67,6 +67,7 @@ const FileUploads = ({props, getCertificate, fileDetails}) => {
           <div className="mb-4">
             <label htmlFor="upload">
               <TextInput
+                label="Private key file"
                 id="upload_key"
                 register={{...register("upload_key")}}
                 type="file"
@@ -74,17 +75,18 @@ const FileUploads = ({props, getCertificate, fileDetails}) => {
               />
             </label>
           </div>
-          <button type="button" onClick={()=>getCertificate()}>Get certificate</button>
+          <button type="button" onClick={() => getCertificate()}>Get certificate</button>
         </div>
       </div>
       <div className="w-2-4 px-3 mb-4">
         <div className="p-6 shadow-md border border-gray-100">
           <h3 className="font-bold text-2xl uppercase text-left mb-6 pb-2 border-b-2 border-gray-200">
-            Signature
+            Signature files
           </h3>
           <div className="mb-4">
             <label htmlFor="upload">
               <TextInput
+                label="Signature file"
                 id="upload_signature"
                 register={{...register("upload_signature")}}
                 type="file"
@@ -92,7 +94,7 @@ const FileUploads = ({props, getCertificate, fileDetails}) => {
               />
             </label>
           </div>
-          <button type="button" onClick={() => downloadFile('fileSignature')}>Descarca fisierul</button>
+          <button type="button" disabled={!isSigantureDisabled} onClick={() => downloadFile('fileSignature')}>Descarca fisierul</button>
         </div>
       </div>
       <div className="w-2-4 px-3 mb-4">
@@ -119,6 +121,14 @@ const FileUploads = ({props, getCertificate, fileDetails}) => {
                 value='aes'
                 error={errors.encrypt_type}
               />
+              <RadioInput
+                label="none"
+                id="aes"
+                register={{...register("encrypt_type")}}
+                type="radio"
+                value='none'
+                error={errors.encrypt_type}
+              />
 
               {showSelect &&
               <select {...register("aes_type")} id="aes">
@@ -127,6 +137,7 @@ const FileUploads = ({props, getCertificate, fileDetails}) => {
               </select>
               }
             </div>
+            {showActions &&
             <div className="flex inputsWrapper">
               <RadioInput
                 label="Encrypt"
@@ -146,13 +157,14 @@ const FileUploads = ({props, getCertificate, fileDetails}) => {
                 error={errors.encrypt_action}
               />
             </div>
+            }
           </div>
         </div>
       </div>
       <div className="w-2-4 px-3 mb-4">
         <div className="p-6 shadow-md border border-gray-100">
           <h3 className="font-bold text-2xl uppercase text-left mb-6 pb-2 border-b-2 border-gray-200">
-            Siganture
+            Siganture actions
           </h3>
           <div className="mb-4">
             <div className="flex inputsWrapper">
@@ -170,6 +182,13 @@ const FileUploads = ({props, getCertificate, fileDetails}) => {
                 register={{...register("signature_type")}}
                 type="radio"
                 value='verify'
+              />
+              <RadioInput
+                label="none"
+                id="check"
+                register={{...register("signature_type")}}
+                type="radio"
+                value='none'
               />
             </div>
           </div>
