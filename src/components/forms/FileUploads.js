@@ -1,9 +1,9 @@
-import React, {useState} from 'react'
+import React, {useRef, useState} from 'react'
 import TextInput from './TextInput'
 import RadioInput from "./RadioInput";
 import {set} from "react-hook-form";
 
-const FileUploads = ({props, getCertificate}) => {
+const FileUploads = ({props, getCertificate, fileDetails}) => {
   const {register, watch, formState: { errors }} = props
   const showSelect = watch('encrypt_type') === 'aes'
   const showIv = watch('aes_type') === 'aesecbc'
@@ -12,24 +12,23 @@ const FileUploads = ({props, getCertificate}) => {
     maxLength: {value: 16, message: 'The length should be 16 char'}
   } : {
   }
-  const [file, setFile] = useState()
-
-  const downloadFile = async () => {
-    await fetch('http://localhost:3000/getFiles', {
+  const downloadFile = async (type) => {
+    const data = await fetch('http://Get certificatelocalhost:3000/getFile', {
       method: 'POST',
-      body: JSON.stringify({download: 'file'}),
+      body: JSON.stringify({fileName: type}),
       headers: { "Content-Type": "Application/json" }
-    }).then(res => res)
+    }).then(res => res.text())
     .then(result => {
-      setFile(result)
       return result;
     })
     .catch((err) => console.log(err))
 
-    //facem fisierul si l descarcam cu datele primite de pe raspuns ( file.fileName, file.fileExtension)
-    // const dowload = React.createElement('a', {href: 'data:application/octet-stream;base64,' + data, download: `${fileData.fileName}${fileData.fileExtension}`}, "Download" )
+    const {filedata: {fileExtension, fileName}} = fileDetails;
 
-    console.log(file);
+    const link = document.createElement('a')
+    link.href = 'data:application/octet-stream;base64,' + data
+    link.download = `${fileName}.${fileExtension}`
+    link.click()
   }
 
   return (
@@ -49,7 +48,7 @@ const FileUploads = ({props, getCertificate}) => {
               />
             </label>
           </div>
-          <button type="button" onClick={() => downloadFile()}>Descarca fisierul</button>
+          <button type="button" onClick={() => downloadFile('fileData')}>Descarca fisierul</button>
         </div>
       </div>
       <div className="w-2-4 px-3 mb-4">
@@ -85,7 +84,7 @@ const FileUploads = ({props, getCertificate}) => {
               />
             </label>
           </div>
-          <button type="submit">Descarca fisierul</button>
+          <button type="button" onClick={() => downloadFile('fileSignature')}>Descarca fisierul</button>
         </div>
       </div>
       <div className="w-2-4 px-3 mb-4">
