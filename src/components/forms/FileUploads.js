@@ -13,7 +13,7 @@ const FileUploads = ({props, getCertificate, fileDetails}) => {
   } : {
   }
   const downloadFile = async (type) => {
-    const data = await fetch('http://Get certificatelocalhost:3000/getFile', {
+    const data = await fetch('http://localhost:3000/getFile', {
       method: 'POST',
       body: JSON.stringify({fileName: type}),
       headers: { "Content-Type": "Application/json" }
@@ -21,13 +21,21 @@ const FileUploads = ({props, getCertificate, fileDetails}) => {
     .then(result => {
       return result;
     })
-    .catch((err) => console.log(err))
+          .catch((err) => console.log(err))
 
-    const {filedata: {fileExtension, fileName}} = fileDetails;
+      const {
+          filedata,
+          signatureData
+      } = fileDetails;
 
     const link = document.createElement('a')
-    link.href = 'data:application/octet-stream;base64,' + data
-    link.download = `${fileName}.${fileExtension}`
+      link.href = 'data:application/octet-stream;base64,' + data
+
+      if (type === "fileSignature") {
+          link.download = `${signatureData.fileName}${signatureData.fileExtension}`
+      } else {
+          link.download = `${filedata.fileName}${filedata.fileExtension}`
+      }
     link.click()
   }
 

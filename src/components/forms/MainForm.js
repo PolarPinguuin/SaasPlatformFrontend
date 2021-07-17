@@ -72,6 +72,10 @@ const MainForm = () => {
     //   .then((result) => console.log(result))
     //   .catch((err) => console.log(err))
 
+      if (!certificateData) {
+          await getCertificate();
+      }
+
     const jsonData = {
       ...jsonBody,
       services: [encryptionAction, signature_type],
